@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     // Referencia al Input Action Asset
     private CustomControls customControls;
+    public PauseMenu pauseMenu;
 
     private Vector2 moveInput;
     private Rigidbody rb;
@@ -28,6 +29,9 @@ public class PlayerManager : MonoBehaviour
         customControls.PlayerInput.Movement.performed += OnMove;
         customControls.PlayerInput.Movement.canceled += OnMove;
         customControls.PlayerInput.Jump.performed += OnJump;
+        // Activar el action map del emnu de pausa
+        customControls.PauseInput.Enable();
+        customControls.PauseInput.Pause.performed += pauseMenu.OnPause;
     }
 
     private void OnDisable()
@@ -37,6 +41,9 @@ public class PlayerManager : MonoBehaviour
         customControls.PlayerInput.Movement.canceled -= OnMove;
         customControls.PlayerInput.Jump.performed -= OnJump;
         customControls.PlayerInput.Disable();
+
+        customControls.PauseInput.Disable();
+        customControls.PauseInput.Pause.performed -= pauseMenu.OnPause;
     }
 
 
