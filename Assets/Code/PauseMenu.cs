@@ -3,30 +3,45 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
-    //timer de tres segundos para que el juego no empiece de repente.
-    private float timer = 3.0f;
-   // public TextMeshProUGUI startText;
+    // public TextMeshProUGUI startText;
     private bool isPaused = false;
 
+    public Slider speedSlider;
+    public PlayerManager player;
+
+    private void Awake()
+    {
+        // Desactivar el menú de pausa al inicio
+        pauseMenu.SetActive(false);
+
+        // Asegurarse de que el valor inicial del slider coincida con la velocidad del jugador
+        speedSlider.value = player.GetSpeed();
+
+        speedSlider.onValueChanged.AddListener(SetPlayerSpeed);
+
+    }
 
     // Función para reanudar el juego
     public void ResumeGame()
     {
-        pauseMenu.SetActive(false); // Desactivar el menú de pausa
+        pauseMenu.SetActive(false); // Ocultar el menú de pausa
         Time.timeScale = 1f; // Reanudar el tiempo
         isPaused = false;
     }
-
-    // Función para pausar el juego
-    void PauseGame()
+   
+    public void PauseGame()
     {
         pauseMenu.SetActive(true); // Mostrar el menú de pausa
-        Time.timeScale = 0f; // Detener el tiempo (pausa)
+        Time.timeScale = 0f; // Pausar el tiempo
         isPaused = true;
+
+        speedSlider.value = player.GetSpeed(); // Actualizar el valor del slider a la velocidad actual del jugador
+        speedSlider.value = player.GetJumpForce(); 
     }
 
     public void OnPause(InputAction.CallbackContext context)
@@ -37,6 +52,14 @@ public class PauseMenu : MonoBehaviour
             PauseGame();
     }
 
+    // Cambiar velocidad player
+    public void SetPlayerSpeed(float valor)
+    {
+        player.SetSpeed(valor);
+        player.SetJumpForce(valor); 
+
+    }
+
     // Función para salir del juego
     public void ExitGame()
     {
@@ -44,8 +67,8 @@ public class PauseMenu : MonoBehaviour
                 // Si estamos en el editor, simplemente parar la ejecución
                 UnityEditor.EditorApplication.isPlaying = false;
         #else
-                // Si es una build, salir del juego
-                Application.Quit();
+                        // Si es una build, salir del juego
+                        Application.Quit();
         #endif
     }
 

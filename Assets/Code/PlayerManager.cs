@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerManager : MonoBehaviour
 {
     // Referencia al Input Action Asset
-    private CustomControls customControls;
+    public CustomControls customControls;
     public PauseMenu pauseMenu;
 
     private Vector2 moveInput;
@@ -24,26 +24,28 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // Activar el Action Map y registrar las acciones
+        // Habilitar el mapa de entrada del jugador
         customControls.PlayerInput.Enable();
         customControls.PlayerInput.Movement.performed += OnMove;
         customControls.PlayerInput.Movement.canceled += OnMove;
         customControls.PlayerInput.Jump.performed += OnJump;
-        // Activar el action map del emnu de pausa
+
+        // Habilitar el mapa de entrada para pausa
         customControls.PauseInput.Enable();
         customControls.PauseInput.Pause.performed += pauseMenu.OnPause;
     }
 
     private void OnDisable()
     {
-        // Desactivar el Action Map y desregistrar las acciones
+        // Deshabilitar el mapa de entrada del jugador
         customControls.PlayerInput.Movement.performed -= OnMove;
         customControls.PlayerInput.Movement.canceled -= OnMove;
         customControls.PlayerInput.Jump.performed -= OnJump;
         customControls.PlayerInput.Disable();
 
-        customControls.PauseInput.Disable();
+        // Deshabilitar el mapa de entrada de pausa
         customControls.PauseInput.Pause.performed -= pauseMenu.OnPause;
+        customControls.PauseInput.Disable();
     }
 
 
@@ -83,5 +85,26 @@ public class PlayerManager : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    // Función para actualizar la velocidad desde el slider
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed; // Actualiza la velocidad del jugador
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    public void SetJumpForce(float newJumpForce)
+    {
+        jumpForce = Mathf.Clamp(newJumpForce, 0f, 20f); // Puedes ajustar los límites de la fuerza de salto aquí
+    }
+
+    public float GetJumpForce()
+    {
+        return jumpForce;
     }
 }
